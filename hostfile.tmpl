@@ -1,0 +1,19 @@
+{{ range $host, $containers := groupByMulti $ "Env.VIRTUAL_HOST" "," }}
+    {{ range $index, $container := $containers }}
+        {{ $networksLen := len $container.Networks }}
+        {{ if gt $networksLen 0 }}
+            {{ with $net := index $container.Networks 0 }}
+127.0.0.1	{{ replace $host "," " " -1 }}
+            {{ end }}
+        {{ end }}
+    {{ end }}
+{{ end }}
+
+{{ range $index, $container := $ }}
+    {{ $networksLen := len $container.Networks }}
+    {{ if gt $networksLen 0 }}
+        {{ with $net := index $container.Networks 0 }}
+{{ if $net.IP }}{{ $net.IP }}	{{ $container.Name }}.docker{{ end }}
+        {{ end }}
+    {{ end }}
+{{ end }}
